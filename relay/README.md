@@ -1,5 +1,5 @@
 # Build
-Pre-Alpha build. Still working on all of the configuration options.
+Alpha build. Still working on all of the configuration options.
 
 # Usage
 
