@@ -1,10 +1,31 @@
-#! /bin/sh
-##
-# FastRelay ported for Docker
-# By LefsFlare / flare@torworld.org
-##
-# Parse arguments
-##
+#!/bin/bash -
+#===============================================================================================================================================
+# (C) Copyright 2016 TorWorld (https://torworld.org) a project under the CryptoWorld Foundation (https://cryptoworld.is).
+#
+# Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.gnu.org/licenses/gpl-3.0.en.html
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#===============================================================================================================================================
+# title            :Docker port FastRelay
+# description      :This script will make it super easy to run a Tor Relay Node on Docker.
+# author           :TorWorld A Project Under The CryptoWorld Foundation.
+# contributors     :LefsFlare
+# date             :10-31-2016
+# version          :0.0.2 Alpha
+# os               :Docker
+# usage            :docker run -it --rm -p 9030:9030 -p 9001:9001 torworld/fastrelay -c "abuse [AT] yoursite.com" -d 9030 -o 9001 -n Relayname
+# notes            :If you have any problems feel free to email us: security[at]torworld.org
+#===============================================================================================================================================
+
 if [[ "$#" -gt 1 ]]; then
     SETCONFIG=true
 else
@@ -41,14 +62,17 @@ while [[ "$#" -gt 1 ]]; do
     esac
 done
 
-if $SETCONFIG; then
-    CONFIG="Nickname ${NICKNAME:-TorWorld}\n\
-    DirPort ${DIRPORT:-80}\n\
-    ORPort ${ORPORT:-443}\n\
-    Exitpolicy reject *:*\n\
-    ContactInfo ${CONTACTINFO:-none}\n\
-    Exitpolicy reject *:*"
-    echo -e "$CONFIG" >> /usr/local/etc/tor/torrc
-fi
+# Write configuration into configuration file
+CONFIG="Nickname ${NICKNAME:-TorWorld}\n\
+ORPort ${ORPORT:-9001}\n\
+DirPort ${DIRPORT:-9030}\n\
+ContactInfo ${CONTACTINFO:-none}\n\
+Exitpolicy reject *:*\n"
+echo -e "$CONFIG" | tee -a /usr/local/etc/tor/torrc
+
+# Overwrite original script file to prevent duplicate configuration
+echo -e "#! /usr/bin/sh\n\
+##\n\
+tor\n" > $0
 
 tor
