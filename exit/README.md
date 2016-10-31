@@ -3,7 +3,7 @@ Alpha build. Still working on all of the configuration options.
 
 # Usage
 
-`docker run -dt —name fastexit --rm torworld/fastexit`
+`docker run -dt --name fastexit --rm torworld/fastexit`
 
 `Nickname: -n name`
 `DirPort: -d port`
