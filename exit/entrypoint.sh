@@ -22,7 +22,7 @@
 # date             :10-31-2016
 # version          :0.0.1 Alpha
 # os               :Docker
-# usage            :docker run -it --rm -p 80:80 -p 9030:9030 -p 9001:9001 torworld/fastexit -c "abuse [AT] yoursite.com" -d 9030 -o 9001 -n Exitname
+# usage            :docker run -dt —name fastexit -p 80:80 -p 9030:9030 -p 9001:9001 torworld/fastexit -c "abuse [AT] yoursite.com" -d 9030 -o 9001 -n Exitname
 # notes            :If you have any problems feel free to email us: security[at]torworld.org
 #===============================================================================================================================================
 
