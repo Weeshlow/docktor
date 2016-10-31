@@ -3,7 +3,7 @@ Alpha build. Still working on all of the configuration options.
 
 # Usage
 
-`docker run -dt —name fastrelay --rm torworld/fastrelay`
+`docker run -dt --name fastrelay --rm torworld/fastrelay`
 
 `Nickname: -n name`
 `DirPort: -d port`
