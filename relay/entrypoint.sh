@@ -19,8 +19,8 @@
 # description      :This script will make it super easy to run a Tor Relay Node on Docker.
 # author           :TorWorld A Project Under The CryptoWorld Foundation.
 # contributors     :LefsFlare
-# date             :10-31-2016
-# version          :0.0.2 Alpha
+# date             :11-6-2016
+# version          :0.0.3 Alpha
 # os               :Docker
 # usage            :docker run -dt —name fastrelay -p 9030:9030 -p 9001:9001 torworld/fastrelay -c "abuse [AT] yoursite.com" -d 9030 -o 9001 -n Relayname
 # notes            :If you have any problems feel free to email us: security[at]torworld.org
@@ -63,16 +63,19 @@ while [[ "$#" -gt 1 ]]; do
 done
 
 # Write configuration into configuration file
-CONFIG="Nickname ${NICKNAME:-TorWorld}\n\
-ORPort ${ORPORT:-9001}\n\
-DirPort ${DIRPORT:-9030}\n\
-ContactInfo ${CONTACTINFO:-none}\n\
-Exitpolicy reject *:*\n"
-echo -e "$CONFIG" | tee -a /usr/local/etc/tor/torrc
+cat <<-EOF | tee -a /usr/local/etc/tor/torrc
+Nickname ${NICKNAME:-TorWorld}
+ORPort ${ORPORT:-9001}
+DirPort ${DIRPORT:-9030}
+ContactInfo ${CONTACTINFO:-none}
+Exitpolicy reject *:*
+EOF
 
 # Overwrite original script file to prevent duplicate configuration
-echo -e "#! /usr/bin/sh\n\
-##\n\
-tor\n" > $0
+cat <<-EOF > $0
+#! /bin/sh
+##
+tor
+EOF
 
 tor
