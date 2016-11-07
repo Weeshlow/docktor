@@ -1,5 +1,5 @@
 FROM alpine:latest
-MAINTAINER Flare flare@lefs.me
+MAINTAINER Flare flare@torworld.org
 
 # Expose default ports
 EXPOSE 9001 9030
