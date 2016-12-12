@@ -1,8 +1,8 @@
 FROM alpine:latest
 MAINTAINER Flare flare@torworld.org
 
-# Expose default ports
-EXPOSE 9001 9030
+# Expose Nginx port
+EXPOSE 80 443
 
 # Expose tor fingerprints
 VOLUME ["/root/.tor"]
@@ -12,15 +12,16 @@ ARG TOR_VERSION
 
 # Update APK and install dependencies
 RUN apk --update upgrade && \
-    apk add alpine-sdk libevent-dev openssl-dev
+    apk add nginx
 
-# Download Tor source
-WORKDIR /tmp
-ADD https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz ./
-RUN tar zxvf tor-${TOR_VERSION}.tar.gz
+# Configure Nginx
+WORKDIR /root
+ADD https://github.com/torworld/fastexit-website-template/archive/master.zip .
+RUN unzip master.zip && \
+    mv fastexit-website-template-master/* /var/lib/nginx/html/ && \
+    rm -rf master.zip fastexit-website-template-master
 
-# Configure source, install and remove source
-WORKDIR /tmp/tor-${TOR_VERSION}
-RUN ./configure && \
-    make install && \
-    rm -rf /tmp/tor-${TOR_VERSION}
+# Add Advanced Policies to torrc
+WORKDIR /root
+ADD https://raw.githubusercontent.com/torworld/fastexit/master/policies/exitpolicy.txt .
+RUN cat exitpolicy.txt | tee -a /usr/local/etc/tor/torrc
