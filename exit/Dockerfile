@@ -2,38 +2,25 @@ FROM alpine:latest
 MAINTAINER Flare flare@torworld.org
 
 # Expose default ports
-EXPOSE 9001 9030 80
+EXPOSE 9001 9030
 
 # Expose tor fingerprints
 VOLUME ["/root/.tor"]
 
+# Get Tor Version
+ARG TOR_VERSION
+
 # Update APK and install dependencies
 RUN apk --update upgrade && \
-    apk add alpine-sdk libevent-dev openssl-dev nginx
-
-# Configure Nginx
-WORKDIR /root
-ADD https://github.com/torworld/fastexit-website-template/archive/master.zip .
-RUN unzip master.zip && \
-    mv fastexit-website-template-master/* /var/lib/nginx/html/ && \
-    rm -rf master.zip fastexit-website-template-master
+    apk add alpine-sdk libevent-dev openssl-dev
 
 # Download Tor source
 WORKDIR /tmp
-ADD https://dist.torproject.org/tor-0.2.8.9.tar.gz ./
-RUN tar zxvf tor-0.2.8.9.tar.gz
+ADD https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz ./
+RUN tar zxvf tor-${TOR_VERSION}.tar.gz
 
 # Configure source, install and remove source
-WORKDIR /tmp/tor-0.2.8.9
+WORKDIR /tmp/tor-${TOR_VERSION}
 RUN ./configure && \
     make install && \
-    rm -rf /tmp/tor-0.2.8.9
-
-# Add Advanced Policies to torrc
-WORKDIR /root
-ADD https://raw.githubusercontent.com/torworld/fastexit/master/exitpolicy.txt .
-RUN cat exitpolicy.txt | tee -a /usr/local/etc/tor/torrc
-
-# Add entrypoint
-ADD entrypoint.sh .
-ENTRYPOINT ["./entrypoint.sh"]
+    rm -rf /tmp/tor-${TOR_VERSION}
